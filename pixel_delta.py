@@ -7,10 +7,13 @@ import numpy as np
 # phi is angle between camera center vector and target pixel vector
 # d is distance between laser plane and camera
 # h is vertical pixel count
-alpha = pi/6
-sigma = pi/3
-d = 5
-h = 1000
+alpha = pi/180*21.5
+sigma = pi/180*51
+r = 0.05
+d = r*tan(sigma)*.65
+#d = r
+h = 3120
+phi_r = atan(d/r)-sigma
 
 def get_phi(y, h, alpha):
 	# get phi of pixel row y
@@ -30,16 +33,27 @@ def crunch(alpha, sigma, phi, d, h):
 def nprint(phi_text, phi):
 	nums = crunch(alpha, sigma, phi, d, h)
 	print(phi_text)
+	print(f"Phi:              {phi}")
 	print(f"Delta approx.:    {nums['da']}")
 	print(f"Tan(eps):         {nums['te']}")
 	print(f"Delta exact:      {nums['de']}")
 	print(f"Error (absolute): {nums['ea']}")
 	print(f"Error (relative): {nums['er']}")
+	print(f"Height:           {d/tan(sigma+phi)}")
 	print("")
+
+print(f"alpha is {alpha} ({alpha/pi} pi)")
+print(f"sigma is {sigma} ({sigma/pi} pi)")
+print(f"d at r={r} is {d}")
 
 nprint('Maximal phi', alpha)
 nprint('Zero phi', 0)
+nprint('phi_r', phi_r)
 nprint('Minimal phi', -alpha)
+nprint('y=h/2', get_phi(h/2, h, alpha))
+
+#for i in range(0,10):
+#	nprint(f'phi = {i}/10*alpha', i/10*alpha)
 
 print(f"phi at y = 50 is {get_phi(50, h, alpha)}")
 
